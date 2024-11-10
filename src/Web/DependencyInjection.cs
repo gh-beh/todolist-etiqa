@@ -1,8 +1,11 @@
-﻿using Azure.Identity;
+﻿using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TodoListWebApi.Application.Common.Interfaces;
 using TodoListWebApi.Infrastructure.Data;
 using TodoListWebApi.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,22 +32,30 @@ public static class DependencyInjection
             options.SuppressModelStateInvalidFilter = true);
 
         services.AddEndpointsApiExplorer();
-
-        services.AddOpenApiDocument((configure, sp) => { configure.Title = "TodoListWebApi API"; });
-
-        return services;
-    }
-
-    public static IServiceCollection AddKeyVaultIfConfigured(this IServiceCollection services,
-        ConfigurationManager configuration)
-    {
-        var keyVaultUri = configuration["AZURE_KEY_VAULT_ENDPOINT"];
-        if (!string.IsNullOrWhiteSpace(keyVaultUri))
+        
+        services.ConfigureHttpJsonOptions(opts =>{
+            // serialize enums as strings for api
+            opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            opts.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            opts.SerializerOptions.WriteIndented = true;
+        });
+        
+        var appName = Assembly.GetExecutingAssembly().GetName().Name;
+        services.AddSwaggerGen(opts =>
         {
-            configuration.AddAzureKeyVault(
-                new Uri(keyVaultUri),
-                new DefaultAzureCredential());
-        }
+            opts.DescribeAllParametersInCamelCase();
+            opts.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = $"{appName} API",
+                Description = $"API documentation for {appName}",
+                Version = "1.0.0"
+            });
+            opts.EnableAnnotations();
+
+            // https://github.com/domaindrivendev/Swashbuckle.AspNetCore#include-descriptions-from-xml-comments
+            var filePath = Path.Combine(AppContext.BaseDirectory, $"{appName}.xml");
+            opts.IncludeXmlComments(filePath);
+        });
 
         return services;
     }

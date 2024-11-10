@@ -1,10 +1,9 @@
+using Swashbuckle.AspNetCore.SwaggerUI;
 using TodoListWebApi.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
-
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
@@ -26,10 +25,20 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSwaggerUi(settings =>
+app.UseSwagger(opts =>
 {
-    settings.Path = "/api";
-    settings.DocumentPath = "/api/specification.json";
+    opts.RouteTemplate = "openapi/{documentName}.{extension:regex(^(json|ya?ml)$)}";
+    
+    app.UseSwaggerUI(opts =>
+    {
+        opts.DisplayOperationId();
+        opts.RoutePrefix = "openapi";
+        opts.ConfigObject.Urls = [new UrlDescriptor
+        {
+            Name = "v1",
+            Url = "/openapi/v1.json"
+        }];
+    });
 });
 
 app.MapControllerRoute(

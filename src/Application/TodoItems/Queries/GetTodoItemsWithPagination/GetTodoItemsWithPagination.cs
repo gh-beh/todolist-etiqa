@@ -11,8 +11,7 @@ public record GetTodoItemsWithPaginationQuery : IRequest<PaginatedList<TodoItemB
     public int PageSize { get; init; } = 10;
 }
 
-public class
-    GetTodoItemsWithPaginationQueryHandler : IRequestHandler<GetTodoItemsWithPaginationQuery,
+public class GetTodoItemsWithPaginationQueryHandler : IRequestHandler<GetTodoItemsWithPaginationQuery,
     PaginatedList<TodoItemBriefDto>>
 {
     private readonly IApplicationDbContext _context;

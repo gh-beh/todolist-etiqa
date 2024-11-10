@@ -3,7 +3,9 @@ using TodoListWebApi.Application.TodoItems.Commands.CreateTodoItem;
 using TodoListWebApi.Application.TodoItems.Commands.DeleteTodoItem;
 using TodoListWebApi.Application.TodoItems.Commands.UpdateTodoItem;
 using TodoListWebApi.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using TodoListWebApi.Application.TodoItems.Queries.GetTodoItem;
 using TodoListWebApi.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using TodoListWebApi.Application.TodoLists.Queries.GetTodos;
 
 namespace TodoListWebApi.Web.Endpoints;
 
@@ -12,8 +14,8 @@ public class TodoItems : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
             .MapGet(GetTodoItemsWithPagination)
+            .MapGet(GetTodoItem, "{id}")
             .MapPost(CreateTodoItem)
             .MapPut(UpdateTodoItem, "{id}")
             .MapPut(UpdateTodoItemDetail, "UpdateDetail/{id}")
@@ -22,6 +24,12 @@ public class TodoItems : EndpointGroupBase
 
     public Task<PaginatedList<TodoItemBriefDto>> GetTodoItemsWithPagination(ISender sender,
         [AsParameters] GetTodoItemsWithPaginationQuery query)
+    {
+        return sender.Send(query);
+    }
+    
+    public Task<TodoItemDto> GetTodoItem(ISender sender,
+        [AsParameters] GetTodoItemQuery query)
     {
         return sender.Send(query);
     }

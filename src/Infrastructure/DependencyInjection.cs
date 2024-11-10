@@ -1,9 +1,6 @@
 ﻿using TodoListWebApi.Application.Common.Interfaces;
-using TodoListWebApi.Domain.Constants;
 using TodoListWebApi.Infrastructure.Data;
 using TodoListWebApi.Infrastructure.Data.Interceptors;
-using TodoListWebApi.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -33,16 +30,7 @@ public static class DependencyInjection
 
         services.AddScoped<ApplicationDbContextInitialiser>();
 
-        services
-            .AddDefaultIdentity<ApplicationUser>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-
         services.AddSingleton(TimeProvider.System);
-        services.AddTransient<IIdentityService, IdentityService>();
-
-        services.AddAuthorization(options =>
-            options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
 
         return services;
     }

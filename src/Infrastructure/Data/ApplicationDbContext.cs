@@ -1,13 +1,11 @@
 ﻿using System.Reflection;
 using TodoListWebApi.Application.Common.Interfaces;
 using TodoListWebApi.Domain.Entities;
-using TodoListWebApi.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace TodoListWebApi.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

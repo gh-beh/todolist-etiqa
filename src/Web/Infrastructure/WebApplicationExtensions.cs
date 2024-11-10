@@ -10,7 +10,7 @@ public static class WebApplicationExtensions
 
         return app
             .MapGroup($"/api/{groupName}")
-            .WithGroupName(groupName)
+            // .WithGroupName(groupName) // Swashbuckle errs if group name is added
             .WithTags(groupName)
             .WithOpenApi();
     }

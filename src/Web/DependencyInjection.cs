@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TodoListWebApi.Application.Common.Interfaces;
 using TodoListWebApi.Infrastructure.Data;
-using TodoListWebApi.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -15,8 +13,6 @@ public static class DependencyInjection
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
-
-        services.AddScoped<IUser, CurrentUser>();
 
         services.AddHttpContextAccessor();
 

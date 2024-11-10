@@ -5,7 +5,6 @@ using TodoListWebApi.Domain.Enums;
 
 namespace TodoListWebApi.Application.TodoLists.Queries.GetTodos;
 
-[Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;
 
 public class GetTodosQueryHandler : IRequestHandler<GetTodosQuery, TodosVm>

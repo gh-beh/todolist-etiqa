@@ -1,11 +1,7 @@
 ﻿using TodoListWebApi.Application.Common.Interfaces;
-using TodoListWebApi.Application.Common.Security;
-using TodoListWebApi.Domain.Constants;
 
 namespace TodoListWebApi.Application.TodoLists.Commands.PurgeTodoLists;
 
-[Authorize(Roles = Roles.Administrator)]
-[Authorize(Policy = Policies.CanPurge)]
 public record PurgeTodoListsCommand : IRequest;
 
 public class PurgeTodoListsCommandHandler : IRequestHandler<PurgeTodoListsCommand>
